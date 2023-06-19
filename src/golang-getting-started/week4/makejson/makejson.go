@@ -13,7 +13,6 @@ func main() {
 	var name string
 	var address string
 	var user map[string]string = make(map[string]string)
-	var user2 map[string]string = make(map[string]string)
 
 	fmt.Scan(&name, &address)
 
@@ -22,8 +21,4 @@ func main() {
 
 	userJson, _ := json.Marshal(user)
 	fmt.Println(userJson)
-
-	// json.Unmarshal(userJson, &user2)
-	// fmt.Println(user2)
-
 }
