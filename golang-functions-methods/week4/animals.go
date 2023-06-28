@@ -11,7 +11,7 @@ type Animal interface {
 }
 
 /****** COW ******/
-type Cow string
+type Cow struct{}
 
 func (cow Cow) Eat() {
 	fmt.Println("grass")
@@ -26,7 +26,7 @@ func (cow Cow) Speak() {
 }
 
 /****** Bird ******/
-type Bird string
+type Bird struct{}
 
 func (bird Bird) Eat() {
 	fmt.Println("worms")
@@ -41,7 +41,7 @@ func (bird Bird) Speak() {
 }
 
 /****** Snake ******/
-type Snake string
+type Snake struct{}
 
 func (snake Snake) Eat() {
 	fmt.Println("mice")
@@ -63,14 +63,13 @@ func addNewAnimal(animalName string, animalType string) *Animal {
 	var newAnimal Animal
 	switch animalType {
 	case "cow":
-		cow := Cow(animalName)
-		newAnimal = cow
+		newAnimal = Cow{}
 
 	case "bird":
-		newAnimal = Bird(animalName)
+		newAnimal = Bird{}
 
 	case "snake":
-		newAnimal = Snake(animalName)
+		newAnimal = Snake{}
 
 	}
 	fmt.Println(newAnimal)
