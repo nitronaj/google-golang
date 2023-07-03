@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"strings"
 )
 
 func getNums() []int {
@@ -19,7 +20,8 @@ func getNums() []int {
 	var count int
 	for {
 		fmt.Scan(&input)
-		if input == "X" {
+		if strings.ToLower(input) == "x" {
+			fmt.Println("Exiting!!!")
 			break
 		}
 
@@ -30,22 +32,30 @@ func getNums() []int {
 		}
 
 		if count < len(nums) {
-			nums[count] = num
+			addToSlice(nums, num)
 		} else {
 			nums = append(nums, num)
 		}
+
+		sort.Ints(nums)
+		fmt.Println(nums)
 		count++
 	}
 	return nums
 }
 
+func addToSlice(numbers []int, num int) {
+	for i := 0; i < len(numbers); i++ {
+		if numbers[i] == 0 && num != 0 {
+			numbers[i] = num
+			break
+		}
+	}
+}
+
 func main() {
 
 	nums := getNums()
-
-	sort.Slice(nums, func(i, j int) bool {
-		return nums[i] < nums[j]
-	})
 
 	fmt.Printf("The list of the numbers: %v \n", nums)
 }
