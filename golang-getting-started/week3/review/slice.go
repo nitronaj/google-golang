@@ -2,49 +2,45 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 )
 
 func main() {
-	integers := make([]int, 3)
+
+	//create an empty integer slice of size (length) 3.
+	mySlice := make([]int, 3)
+
+	var myInput string
+	// loop that runs infinitely until user imputs x or X
 
 	for {
-		var input string
 
-		_, err := fmt.Scan(&input)
+		//Prompts the user to enter an integer to be added to the slice
+		fmt.Println("Enter a integer to add to the Slice or X to quit: ")
+		fmt.Scan(&myInput)
 
-		// do checks
-		if err != nil {
-			fmt.Println("Error reading input, please try again.")
-			continue
-		} else if input == "X" {
-			fmt.Println("Exiting...")
+		// Terminate loop when myIput is x or X
+		if myInput == "x" || myInput == "X" {
 			break
 		}
 
-		// parse the number to integer
-		number, err := strconv.Atoi(input)
+		//convert input to integer
+		myInteger, err := strconv.Atoi(myInput)
+
 		if err != nil {
-			fmt.Println("Could not convert to integer, please try again.")
-			continue
-		}
+			fmt.Println("Error while adding integer to Slice")
+		} else {
 
-		integers = appendSorted(integers, number)
+			//append Integer to Slice
+			mySlice = append(mySlice, myInteger)
 
-		fmt.Println(integers)
+			//Sort the Slice
+			sort.Ints(mySlice)
 
-	}
-}
+			//Print the sorted Slice
+			fmt.Println("Sorted Slice: ", mySlice)
 
-func appendSorted(integers []int, number int) []int {
-	for i, v := range integers {
-		if number < v {
-			new_integers := make([]int, 0, len(integers)+1)
-			new_integers = append(new_integers, integers[:i]...)
-			new_integers = append(new_integers, number)
-			new_integers = append(new_integers, integers[i:]...)
-			return new_integers
 		}
 	}
-	return append(integers, number)
 }

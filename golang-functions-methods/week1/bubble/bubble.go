@@ -42,6 +42,7 @@ func BubbleSort(numbers []int) {
 
 func main() {
 	var intNumbers []int
+	var numberOfIntegers = 9
 
 	// Create a scanner to read from stdin.
 	scanner := bufio.NewScanner(os.Stdin)
@@ -49,7 +50,11 @@ func main() {
 	// Read the string of space separated integers from stdin.
 	scanner.Scan()
 	numbers := strings.Fields(scanner.Text())
-	numbers = numbers[:9]
+	if len(numbers) < numberOfIntegers {
+		numberOfIntegers = len(numbers)
+	}
+
+	numbers = numbers[:numberOfIntegers]
 
 	for _, number := range numbers {
 		num, err := strconv.Atoi(number)

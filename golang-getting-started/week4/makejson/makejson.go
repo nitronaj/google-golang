@@ -14,11 +14,15 @@ func main() {
 	var address string
 	var user map[string]string = make(map[string]string)
 
-	fmt.Scan(&name, &address)
+	fmt.Println("Enter a name:")
+	fmt.Scan(&name)
+	fmt.Println("Enter an address:")
+	fmt.Scan(&address)
 
 	user["name"] = name
 	user["address"] = address
 
-	userJson, _ := json.Marshal(user)
-	fmt.Println(userJson)
+	userJson, _ := json.MarshalIndent(user, "", " ")
+
+	fmt.Println(string(userJson))
 }
