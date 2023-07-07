@@ -20,7 +20,7 @@
 // The second string is the name of the information requested about the animal, either “eat”, “move”, or “speak”.
 // Your program should process each request by printing out the requested data.
 
-// You will need a data structure to hold the information about each animal.
+// You will need a data structure to hold the information about each
 // Make a type called Animal which is a struct containing three fields:food, locomotion, and noise, all of which are strings.
 // Make three methods called Eat(), Move(), and Speak(). The receiver type of all of your methods should be your Animal type.
 // The Eat() method should print the animal’s food, the Move() method should print the animal’s locomotion, and the Speak() method should print the animal’s spoken sound.
@@ -31,13 +31,48 @@ package main
 
 import (
 	"fmt"
-	"google-golang/src/golang-functions-methods/week3/animal"
+
+	"golang.org/x/exp/slices"
 )
 
-func initAnimals(animalNames []string) map[string]*animal.Animal {
-	var animals map[string]*animal.Animal = make(map[string]*animal.Animal)
+type Animal struct {
+	food       string
+	locomotion string
+	noise      string
+}
+
+func (animal *Animal) InitAnimal(food string, locomotion string, noise string) *Animal {
+	animal.food = food
+	animal.locomotion = locomotion
+	animal.noise = noise
+
+	return animal
+}
+
+func (animal *Animal) ToString() {
+	fmt.Println(animal.food, animal.locomotion, animal.noise)
+}
+
+func (animal *Animal) Print() {
+	fmt.Println(animal)
+}
+
+func (animal *Animal) Eat() {
+	fmt.Println(animal.food)
+}
+
+func (animal *Animal) Move() {
+	fmt.Println(animal.locomotion)
+}
+
+func (animal *Animal) Speak() {
+	fmt.Println(animal.noise)
+}
+
+func initAnimals(animals *map[string]*Animal, animalNames []string) {
+
 	for _, name := range animalNames {
-		var newAnimal animal.Animal
+		var newAnimal Animal
 		switch name {
 		case "cow":
 			newAnimal.InitAnimal("grass", "walk", "moo")
@@ -47,48 +82,35 @@ func initAnimals(animalNames []string) map[string]*animal.Animal {
 			newAnimal.InitAnimal("mice", "slither", "hsss")
 
 		}
-		animals[name] = &newAnimal
+		(*animals)[name] = &newAnimal
 	}
-
-	return animals
-
-}
-
-func initAnimals2(animalNames []string) map[string]*animal.Animal {
-	var cow animal.Animal
-	cow.InitAnimal("grass", "walk", "moo")
-
-	var bird animal.Animal
-	bird.InitAnimal("worms", "fly", "peep")
-
-	var snake animal.Animal
-	snake.InitAnimal("mice", "slither", "hsss")
-
-	animals := map[string]*animal.Animal{
-		"cow":   &cow,
-		"snake": &bird,
-		"bird":  &snake,
-	}
-
-	return animals
 }
 
 func main() {
-
-	animals := initAnimals([]string{"cow", "bird", "snake"})
-	var name, info string
+	var animalTypes = []string{"cow", "bird", "snake"}
+	var animals map[string]*Animal = make(map[string]*Animal)
+	initAnimals(&animals, animalTypes)
+	var animalType, info string
 	for {
 
-		fmt.Print(">")
-		fmt.Scan(&name, &info)
+		fmt.Print("Please enter the animal info >")
+		fmt.Scan(&animalType, &info)
+
+		index := slices.Index(animalTypes, animalType)
+
+		if index == -1 {
+			fmt.Printf("Please enter animal be one of %v\n\n", animalTypes)
+			continue
+		}
 
 		switch info {
 		case "eat":
-			animals[name].Eat()
+			animals[animalType].Eat()
 		case "move":
-			animals[name].Move()
+			animals[animalType].Move()
 		case "speak":
-			animals[name].Speak()
+			animals[animalType].Speak()
+
 		}
 
 	}
