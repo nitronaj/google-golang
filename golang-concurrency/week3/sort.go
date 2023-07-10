@@ -21,19 +21,19 @@ import (
 func sortArray(nums []int, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	fmt.Println(nums)
+	fmt.Println("---", nums)
 	sort.Ints(nums)
-
+	fmt.Println("Sorted slice:", nums)
 }
 
-func main() {
-	var wg sync.WaitGroup
-	var intNumbers []int
-
+func readNumbers() []string {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
-	numbers := strings.Fields(scanner.Text())
+	return strings.Fields(scanner.Text())
+}
 
+func covertToSliceOfIns(numbers []string) []int {
+	var intNumbers []int
 	for _, number := range numbers {
 		num, err := strconv.Atoi(number)
 		if err != nil {
@@ -43,30 +43,25 @@ func main() {
 		intNumbers = append(intNumbers, num)
 	}
 
-	fmt.Println(intNumbers)
-	numberOfPartitions := 4
-	lengthOfEachPartition := len(intNumbers) / 4
+	return intNumbers
+}
 
-	subArray := make([][]int, numberOfPartitions)
-	fmt.Println(subArray)
+func main() {
+	var wg sync.WaitGroup
+	var intNumbers []int // []int{1, 5, 9, 3, 7, 4, 8, 6, 2, 0, 25, -1}
+
+	numbers := readNumbers()
+	intNumbers = covertToSliceOfIns(numbers)
+
+	numberOfPartitions := 4
+	lengthOfEachPartition := len(intNumbers) / numberOfPartitions
 
 	for i := 0; i < len(intNumbers); i = i + lengthOfEachPartition {
 		wg.Add(1)
 		go sortArray(intNumbers[i:i+lengthOfEachPartition], &wg)
 	}
 
-	// // Create four goroutines to sort the array.
-	// for i := 0; i < 4; i++ {
-	// 	wg.Add(1)
-	// 	go func(i int) {
-	// 		defer wg.Done()
-
-	// 		// Sort the subarray.
-	// 		subarray := intNumbers[i*2 : (i+1)*2]
-	// 		sort.Ints(subarray)
-	// 	}(i)
-	// }
-
 	wg.Wait()
-	fmt.Println(intNumbers)
+	sort.Ints(intNumbers)
+	fmt.Println("Sorted Final Array:", intNumbers)
 }

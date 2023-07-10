@@ -13,26 +13,71 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"sync"
 )
 
 type Chops struct{ sync.Mutex }
 
 type Philo struct {
+	id, count int
+
 	leftCS, rightCS *Chops
 }
 
-func (p Philo) eat(wg *sync.WaitGroup) {
+func (p Philo) eat(wg *sync.WaitGroup, c chan int) {
 	defer wg.Done()
-	for i := 0; i < 3; i++ {
-		p.leftCS.Lock()
-		p.rightCS.Lock()
+	// philoId := <-c
+	// fmt.Println("PhiloId from channel ", philoId)
 
-		fmt.Println("eating")
+	p.leftCS.Lock()
+	p.rightCS.Lock()
+	// if philoId == p.id {
+	// 	p.count += 1
+	// }
+	fmt.Println("starting to eat ", p.id+1)
+	p.leftCS.Unlock()
+	p.rightCS.Unlock()
 
-		p.leftCS.Unlock()
-		p.rightCS.Unlock()
+	fmt.Println("finishing eating", p.id+1)
+	fmt.Println("")
+}
+
+func host(wg *sync.WaitGroup, philos []*Philo) {
+	defer wg.Done()
+	var c chan int
+	var numberOfProcess int
+	for {
+		numberOfProcess = 0
+		philoId := rand.Intn(5)
+		// fmt.Println("Chooseing the philo: ", philoId+1)
+
+		if philos[philoId].count >= 3 {
+			continue
+		}
+
+		philos[philoId].count = philos[philoId].count + 1
+
+		for _, philo := range philos {
+			// fmt.Println("Philo", philo.id+1, philo.count)
+			numberOfProcess += philo.count
+		}
+
+		if numberOfProcess == 15 {
+			break
+		}
+
+		// fmt.Println("Number of process", numberOfProcess)
+		// fmt.Println("-----------------")
+		wg.Add(1)
+
+		go philos[philoId].eat(wg, c)
+
+		// c <- philoId
 	}
+
+	// close(c)
+
 }
 
 func main() {
@@ -49,15 +94,9 @@ func main() {
 		if left > right {
 			right, left = left, right
 		}
-		fmt.Println(left, right)
-
-		philos[i] = &Philo{chopsticks[left], chopsticks[right]}
+		philos[i] = &Philo{i, 0, chopsticks[left], chopsticks[right]}
 	}
-
-	for i := 0; i < 5; i++ {
-		wg.Add(1)
-		go philos[i].eat(&wg)
-	}
-
+	wg.Add(1)
+	go host(&wg, philos)
 	wg.Wait()
 }
