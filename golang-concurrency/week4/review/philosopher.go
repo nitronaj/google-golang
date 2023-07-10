@@ -40,7 +40,6 @@ func main() {
 		go Philosophers[i].eat()
 
 	}
-	// "concurrency"
 	eatWgroup.Wait()
 }
 
